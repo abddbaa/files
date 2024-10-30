@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>رفع الصور إلى Firebase</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background-color: #f9f9f9;
+    }
+    h1 {
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1>رفع الصور إلى Firebase</h1>
+  <input type="file" id="fileInput" multiple accept="image/*" style="display:none" />
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyALGGBFq-XDvq78XmN13d1FX-9jv2e2jDE",
+      authDomain: "image-b3894.firebaseapp.com",
+      projectId: "image-b3894",
+      storageBucket: "image-b3894.appspot.com",
+      messagingSenderId: "724136212410",
+      appId: "1:724136212410:web:9450152940928e78a40f83",
+      measurementId: "G-D8NNFMGFH1"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const storage = firebase.storage();
+
+    const uploadFiles = (files) => {
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const storageRef = storage.ref().child(`uploaded_images/${file.name}`);
+        const uploadTask = storageRef.put(file);
+
+        uploadTask.on('state_changed',
+          (snapshot) => {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log(`Upload is ${progress}% done`);
+          },
+          (error) => {
+            console.error('Upload failed:', error);
+          },
+          () => {
+            console.log('Upload successful!');
+          }
+        );
+      }
+    };
+
+    window.onload = () => {
+      const input = document.getElementById('fileInput');
+      input.addEventListener('change', () => uploadFiles(input.files));
+
+      // فتح نافذة اختيار الملفات بشكل تلقائي عند تحميل الصفحة
+      input.click();
+    };
+  </script>
+</body>
+</html>
