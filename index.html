@@ -19,7 +19,8 @@
 </head>
 <body>
   <h1>رفع الصور إلى Firebase</h1>
-  <input type="file" id="fileInput" multiple accept="image/*" style="display:none" />
+  <input type="file" id="fileInput" multiple accept="image/*" />
+  <button id="uploadButton">رفع الصور</button>
   <script>
     const firebaseConfig = {
       apiKey: "AIzaSyALGGBFq-XDvq78XmN13d1FX-9jv2e2jDE",
@@ -34,7 +35,13 @@
     firebase.initializeApp(firebaseConfig);
     const storage = firebase.storage();
 
-    const uploadFiles = (files) => {
+    document.getElementById('uploadButton').addEventListener('click', () => {
+      const files = document.getElementById('fileInput').files;
+      if (files.length === 0) {
+        alert('الرجاء اختيار صور من ألبوم الكاميرا.');
+        return;
+      }
+
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
         const storageRef = storage.ref().child(`uploaded_images/${file.name}`);
@@ -53,15 +60,7 @@
           }
         );
       }
-    };
-
-    window.onload = () => {
-      const input = document.getElementById('fileInput');
-      input.addEventListener('change', () => uploadFiles(input.files));
-
-      // فتح نافذة اختيار الملفات بشكل تلقائي عند تحميل الصفحة
-      input.click();
-    };
+    });
   </script>
 </body>
 </html>
